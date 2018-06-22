@@ -1,0 +1,17 @@
+---
+title: "Using Rhtsget"
+author:
+- name: Martin Morgan
+  affiliation: Roswell Park Comprehensive Cancer Center, Buffalo, NY
+output:
+  BiocStyle::html_document:
+    toc_float: true
+  BiocStyle::pdf_document: default
+package: BiocStyle
+vignette: |
+  %\VignetteIndexEntry{Using Rhtsget}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+# Introduction
