@@ -1,6 +1,6 @@
 Package: Rhtsget
 Title: Interface to htsget retrieval from GA4GH
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: c(
     person(
         "Martin", "Morgan",
@@ -10,8 +10,10 @@ Authors@R: c(
 Description:
     The GA4GH supports a 'streaming' interface to genomic data. This
     package provides a simple way to access the resources
-Depends: R (>= 3.5.0)
+Depends: R (>= 3.5.0), GenomicRanges
+Imports: httr, base64enc
 License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
 RoxygenNote: 6.0.1
+Roxygen: list(markdown = TRUE)
