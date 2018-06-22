@@ -1,6 +1,6 @@
-specification: https://samtools.github.io/hts-specs/htsget.html
-python client: https://htsget.readthedocs.io/
-ga4gh news: https://www.ga4gh.org/news/-9msBlhISDK_ltjA7Vt6aA.article
+- specification: https://samtools.github.io/hts-specs/htsget.html
+- python client: https://htsget.readthedocs.io/
+- ga4gh news: https://www.ga4gh.org/news/-9msBlhISDK_ltjA7Vt6aA.article
 
 Example
 
