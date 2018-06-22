@@ -23,11 +23,10 @@ endpoint.}
 Retrieve reads (BAM files)
 }
 \examples{
-gr <- GRanges("chr12:111766922-111817529")
+gr <- GenomicRanges::GRanges("chr12:111766922-111817529")
 sample_id <- "platinum/NA12878"
 endpoint <- "https://htsnexus.rnd.dnanex.us/v1"
-fl <- file.path(tempdir(), paste0(basename(url), ".bam"))
-unlink(fl)
+fl <- tempfile(fileext=".bam")
 bam <- htsget_reads(gr, sample_id, endpoint, fl)
 Rsamtools::countBam(bam)
 

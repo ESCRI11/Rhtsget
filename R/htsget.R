@@ -43,22 +43,23 @@
 #' @param destination `character(1)` file for output; must not exist.
 #'
 #' @examples
-#' gr <- GRanges("chr12:111766922-111817529")
+#' gr <- GenomicRanges::GRanges("chr12:111766922-111817529")
 #' sample_id <- "platinum/NA12878"
 #' endpoint <- "https://htsnexus.rnd.dnanex.us/v1"
-#' fl <- file.path(tempdir(), paste0(basename(url), ".bam"))
-#' unlink(fl)
+#' fl <- tempfile(fileext=".bam")
 #' bam <- htsget_reads(gr, sample_id, endpoint, fl)
 #' Rsamtools::countBam(bam)
 #'
+#' @importMethodsFrom GenomicRanges seqnames start end
 #' @export
 htsget_reads <-
     function(granges, sample_id, endpoint, destination)
 {
     queries <- sprintf(
         "%s/reads/%s?format=BAM&referenceName=%s&start=%s&end=%s",
-        endpoint, sample_id, seqnames(gr), start(gr), end(gr)
+        endpoint, sample_id,
+        seqnames(granges), start(granges), end(granges)
     )
     content <- .htsget(queries[[1]])
-    .as_bam(content$urls, output)
+    .as_bam(content$urls, destination)
 }
