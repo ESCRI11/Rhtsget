@@ -41,30 +41,43 @@
 #' @param sample_id `character(1)` sample identifier
 #' @param url `character(1)` data resource url, excluding endpoint and
 #'     sample information.
+#' @param fields `character()` of BAM fields to be included; default
+#'     (`NULL`) includes all fields.
 #' @param destination `character(1)` file for output; must not exist.
+#'
+#' @return `htsget_reads()` return the path to a BAM file containing
+#'     the requested information.
 #'
 #' @examples
 #' gr <- GenomicRanges::GRanges("chr12:111766922-111817529")
 #' sample_id <- "platinum/NA12878"
 #' url <- "https://htsnexus.rnd.dnanex.us/v1"
 #' fl <- tempfile(fileext=".bam")
-#' bam <- htsget_reads(gr, sample_id, url, fl)
+#' bam <- htsget_reads(gr, sample_id, url, destination = fl)
 #' Rsamtools::countBam(bam)
 #'
 #' @importMethodsFrom GenomicRanges seqnames start end
 #' @export
 htsget_reads <-
-    function(granges, sample_id, url, destination)
+    function(granges, sample_id, url, fields = NULL, destination)
 {
     stopifnot(
         .is_single_granges(granges), .is_single_string(sample_id),
-        .is_single_string(url), .is_nonexistent_file(destination)
+        .is_single_string(url), .is_nonexistent_file(destination),
+        all(fields %in% names(.BAM_fields))
     )
 
+    fields <-
+        if (is.null(fields)) {
+            ""
+        } else {
+            sprintf("&fields=%s", paste(fields, collapse=","))
+        }
     queries <- sprintf(
-        "%s/reads/%s?format=BAM&referenceName=%s&start=%s&end=%s",
+        "%s/reads/%s?format=BAM&referenceName=%s&start=%s&end=%s%s",
         url, sample_id,
-        seqnames(granges), start(granges), end(granges)
+        seqnames(granges), start(granges), end(granges),
+        fields
     )
     content <- .htsget(queries[[1]])
     .as_file(content$urls, destination)
@@ -72,12 +85,48 @@ htsget_reads <-
 
 #' @rdname htsget
 #'
+#' @return `BAMfields()` returns a data.frame describing available
+#'     fields.
+#'
+#' @examples
+#' BAMfields()
+#' fl <- tempfile(fileext=".bam")
+#' fields <- c("RNAME", "POS", "CIGAR")
+#' bam <- htsget_reads(gr, sample_id, url, fields, destination = fl)
+#' names(Rsamtools::scanBam(bam)[[1]])
+#'
+#' @export
+BAMfields <-
+    function()
+{
+    as.data.frame(.BAM_fields)
+}
+
+.BAM_fields <- c(
+    QNAME = "Read names",
+    FLAG = "Read bit flags",
+    RNAME = "Reference sequence name",
+    POS = "Alignment position",
+    MAPQ = "Mapping quality score",
+    CIGAR = "CIGAR string",
+    RNEXT = "Reference sequence name of the next fragment template",
+    PNEXT = "Alignment position of the next fragment in the template",
+    TLEN = "Inferred template size",
+    SEQ = "Read bases",
+    QUAL = "Base quality scores"
+)
+
+#' @rdname htsget
+#'
+#' @return `htsget_variants()` returns a `character(1)` path to a VCF file
+#'     containing requested information.
+#'
 #' @examples
 #' gr <- GenomicRanges::GRanges("12:112204691-112247789")
 #' sample_id <- "1000genomes/20130502_autosomes"
 #' url <- "https://htsnexus.rnd.dnanex.us/v1"
 #' fl <- tempfile(fileext=".vcf")
-#' vcf <- htsget_variants(gr, sample_id, url, fl)
+#' vcf <- htsget_variants(gr, sample_id, url, destination = fl)
 #' VariantAnnotation::readVcf(vcf)
 #' @export
 htsget_variants <-

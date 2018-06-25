@@ -2,10 +2,13 @@
 % Please edit documentation in R/htsget.R
 \name{htsget_reads}
 \alias{htsget_reads}
+\alias{BAMfields}
 \alias{htsget_variants}
 \title{Retrieve reads (BAM files) or variants (VCF files)}
 \usage{
-htsget_reads(granges, sample_id, url, destination)
+htsget_reads(granges, sample_id, url, fields = NULL, destination)
+
+BAMfields()
 
 htsget_variants(granges, sample_id, url, destination)
 }
@@ -20,7 +23,20 @@ closed intervals) and are translated to GA4GH coordinates
 \item{url}{\code{character(1)} data resource url, excluding endpoint and
 sample information.}
 
+\item{fields}{\code{character()} of BAM fields to be included; default
+(\code{NULL}) includes all fields.}
+
 \item{destination}{\code{character(1)} file for output; must not exist.}
+}
+\value{
+\code{htsget_reads()} return the path to a BAM file containing
+the requested information.
+
+\code{BAMfields()} returns a data.frame describing available
+fields.
+
+\code{htsget_variants()} returns a \code{character(1)} path to a VCF file
+containing requested information.
 }
 \description{
 Retrieve reads (BAM files) or variants (VCF files)
@@ -30,13 +46,19 @@ gr <- GenomicRanges::GRanges("chr12:111766922-111817529")
 sample_id <- "platinum/NA12878"
 url <- "https://htsnexus.rnd.dnanex.us/v1"
 fl <- tempfile(fileext=".bam")
-bam <- htsget_reads(gr, sample_id, url, fl)
+bam <- htsget_reads(gr, sample_id, url, destination = fl)
 Rsamtools::countBam(bam)
+
+BAMfields()
+fl <- tempfile(fileext=".bam")
+fields <- c("RNAME", "POS", "CIGAR")
+bam <- htsget_reads(gr, sample_id, url, fields, destination = fl)
+names(Rsamtools::scanBam(bam)[[1]])
 
 gr <- GenomicRanges::GRanges("12:112204691-112247789")
 sample_id <- "1000genomes/20130502_autosomes"
 url <- "https://htsnexus.rnd.dnanex.us/v1"
 fl <- tempfile(fileext=".vcf")
-vcf <- htsget_variants(gr, sample_id, url, fl)
+vcf <- htsget_variants(gr, sample_id, url, destination = fl)
 VariantAnnotation::readVcf(vcf)
 }
