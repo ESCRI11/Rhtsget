@@ -59,7 +59,7 @@
 #' @importMethodsFrom GenomicRanges seqnames start end
 #' @export
 htsget_reads <-
-    function(granges, sample_id, url, fields = NULL, destination)
+    function(granges, sample_id, url, token, fields = NULL, destination)
 {
     stopifnot(
         .is_single_granges(granges), .is_single_string(sample_id),
@@ -74,14 +74,35 @@ htsget_reads <-
             sprintf("&fields=%s", paste(fields, collapse=","))
         }
     queries <- sprintf(
-        "%s/reads/%s?format=BAM&referenceName=%s&start=%s&end=%s%s",
+        "%s/files/%s?format=BAM&referenceName=%s&start=%s&end=%s%s",
         url, sample_id,
         seqnames(granges), start(granges), end(granges),
         fields
     )
-    content <- .htsget(queries[[1]])
+    content <- .htsget(queries[[1]], token)
     .as_file(content$urls, destination)
+    }
+
+
+#' @rdname htsget_get_token
+#'
+#' @return
+#' @export
+#'
+#' @examples
+htsget_get_token <- function(url, user, pass){
+
+    res <- httr::POST(url, add_headers("Content-Type" = "application/x-www-form-urlencoded"),
+                      body = list(grant_type = "password",
+                                  client_id = "f20cd2d3-682a-4568-a53e-4262ef54c8f4",
+                                  scope = "openid",
+                                  client_secret = "AMenuDLjVdVo4BSwi0QD54LL6NeVDEZRzEQUJ7hJOM3g4imDZBHHX0hNfKHPeQIGkskhtCmqAJtt_jm7EKq-rWw",
+                                  username = user,
+                                  password = pass), encode = "form")
+    
+    return(paste("Bearer", content(res)$access_token))
 }
+
 
 #' @rdname htsget
 #'

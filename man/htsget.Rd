@@ -6,7 +6,7 @@
 \alias{htsget_variants}
 \title{Retrieve reads (BAM files) or variants (VCF files)}
 \usage{
-htsget_reads(granges, sample_id, url, fields = NULL, destination)
+htsget_reads(granges, sample_id, url, token, fields = NULL, destination)
 
 BAMfields()
 

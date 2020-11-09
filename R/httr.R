@@ -1,9 +1,9 @@
 #' @importFrom httr GET stop_for_status content
 
 .htsget <-
-    function(query)
+    function(query, token)
 {
-    response <- GET(query)
+    response <- GET(query, add_headers("Authorization" = token))
     stop_for_status(response)
     content(response, type="application/json")[["htsget"]]
 }

@@ -15,5 +15,5 @@ Imports: httr, base64enc
 License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 6.0.1
+RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)
