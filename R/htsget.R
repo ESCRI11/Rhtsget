@@ -59,7 +59,7 @@
 #' @importMethodsFrom GenomicRanges seqnames start end
 #' @export
 htsget_reads <-
-    function(granges, sample_id, url, token = NULL, fields = NULL, destination)
+    function(granges, sample_id, url, ega = FALSE, token = NULL, fields = NULL, destination)
 {
     stopifnot(
         .is_single_granges(granges), .is_single_string(sample_id),
@@ -73,12 +73,23 @@ htsget_reads <-
         } else {
             sprintf("&fields=%s", paste(fields, collapse=","))
         }
-    queries <- sprintf(
-        "%s/files/%s?format=BAM&referenceName=%s&start=%s&end=%s%s",
-        url, sample_id,
-        seqnames(granges), start(granges), end(granges),
-        fields
-    )
+    if(ega){
+        queries <- sprintf(
+            "%s/files/%s?format=BAM&referenceName=%s&start=%s&end=%s%s",
+            url, sample_id,
+            seqnames(granges), start(granges), end(granges),
+            fields
+        )
+    }
+    else{
+        queries <- sprintf(
+            "%s/reads/%s?format=BAM&referenceName=%s&start=%s&end=%s%s",
+            url, sample_id,
+            seqnames(granges), start(granges), end(granges),
+            fields
+        )
+    }
+    
     content <- .htsget(queries[[1]], token)
     .as_file(content$urls, destination)
     }
