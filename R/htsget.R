@@ -59,7 +59,7 @@
 #' @importMethodsFrom GenomicRanges seqnames start end
 #' @export
 htsget_reads <-
-    function(granges, sample_id, url, token, fields = NULL, destination)
+    function(granges, sample_id, url, token = NULL, fields = NULL, destination)
 {
     stopifnot(
         .is_single_granges(granges), .is_single_string(sample_id),
@@ -151,7 +151,7 @@ BAMfields <-
 #' VariantAnnotation::readVcf(vcf)
 #' @export
 htsget_variants <-
-    function(granges, sample_id, url, destination)
+    function(granges, sample_id, url, token = NULL, destination)
 {
     stopifnot(
         .is_single_granges(granges), .is_single_string(sample_id),
@@ -163,6 +163,6 @@ htsget_variants <-
         url, sample_id,
         seqnames(granges), start(granges), end(granges)
     )
-    content <- .htsget(queries[[1]])
+    content <- .htsget(queries[[1]], token)
     .as_file(content$urls, destination)
 }

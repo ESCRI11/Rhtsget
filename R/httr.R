@@ -3,7 +3,12 @@
 .htsget <-
     function(query, token)
 {
-    response <- GET(query, add_headers("Authorization" = token))
+    if(!is.null(token)){
+        response <- GET(query, add_headers("Authorization" = token))
+    }
+    else{
+        response <- GET(query)
+    }
     stop_for_status(response)
     content(response, type="application/json")[["htsget"]]
 }
