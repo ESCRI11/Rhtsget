@@ -6,11 +6,19 @@
 \alias{htsget_variants}
 \title{Retrieve reads (BAM files) or variants (VCF files)}
 \usage{
-htsget_reads(granges, sample_id, url, token, fields = NULL, destination)
+htsget_reads(
+  granges,
+  sample_id,
+  url,
+  ega = FALSE,
+  token = NULL,
+  fields = NULL,
+  destination
+)
 
 BAMfields()
 
-htsget_variants(granges, sample_id, url, destination)
+htsget_variants(granges, sample_id, url, token = NULL, destination)
 }
 \arguments{
 \item{granges}{\code{GRanges()} instance with genomic coordinates for

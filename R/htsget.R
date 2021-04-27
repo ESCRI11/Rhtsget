@@ -29,7 +29,13 @@
         }
     }
     output
-}
+    }
+
+.save_table <-
+    function(table, output)
+    {
+        write.csv(table, output, quote = FALSE, row.names = FALSE)
+    }
 
 #' Retrieve reads (BAM files) or variants (VCF files)
 #' @rdname htsget
@@ -176,4 +182,29 @@ htsget_variants <-
     )
     content <- .htsget(queries[[1]], token)
     .as_file(content$urls, destination)
+    }
+
+
+#' Title
+#'
+#' @param file_id 
+#' @param url 
+#' @param token 
+#' @param destination 
+#'
+#' @return
+#' @export
+#'
+#' @examples
+fetch_file <-
+    function(file_id, url, token = NULL, destination)
+{
+        # url = URL_API + "/files/{}".format(file_id)
+    queries <- sprintf(
+        "%s/files/%s", url, file_id)
+    # browser()
+    # remotes::down
+    content <- .fetch_file(queries[[1]], token)
+    .save_table(content, destination)
+    # .as_file(content$urls, destination)
 }

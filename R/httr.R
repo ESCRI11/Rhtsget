@@ -27,4 +27,17 @@
     headers <- add_headers(unlist(headers))
     response <- GET(query, headers, .htsstream_writer(bam), progress())
     stop_for_status(response)
-}
+    }
+
+.fetch_file <-
+    function(query, token)
+    {
+        if(!is.null(token)){
+            response <- GET(query, add_headers("Authorization" = token))
+        }
+        else{
+            response <- GET(query)
+        }
+        stop_for_status(response)
+        content(response, type="text/csv")#[["htsget"]]
+    }
